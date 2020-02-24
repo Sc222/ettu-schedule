@@ -3,16 +3,12 @@ package server;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpPrincipal;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Collections;
 
-public class FirstLettersHttpHandler implements HttpHandler {
+public class ApiLinksHttpHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -20,10 +16,9 @@ public class FirstLettersHttpHandler implements HttpHandler {
     }
 
     private static void handleRequest(HttpExchange httpExchange) throws IOException {
-        printRequestInfo(httpExchange);
-        String result = getEttuFirstLettersData();
+        String result = generateApiLinksPage();
         URI requestURI = httpExchange.getRequestURI();
-        String response = "This is the response at " + requestURI+"\nTransport stops first symbols\n"+result;
+        String response = "This is the response at " + requestURI+"<br>All Api links:"+result;
         Headers headers = httpExchange.getResponseHeaders();
         //headers.add("Content-Type","application/json; charset=utf-8");
         headers.add("Content-Type","text/html; charset=utf-8");
@@ -34,12 +29,23 @@ public class FirstLettersHttpHandler implements HttpHandler {
         os.close();
     }
 
-    private static String getEttuFirstLettersData() throws IOException {
-        Document doc = Jsoup.connect("http://online.ettu.ru/").get();
-        return String.join("\n",doc.getElementsByClass("letter-link").eachText());
+    private static String generateApiLinksPage() {
+        StringBuilder result = new StringBuilder();
+        result.append(generateLink("/tram-stops","Tram stops"));
+        result.append(generateLink("/troll-stops","Troll stops"));
+        return result.toString();
     }
 
-    private static void printRequestInfo(HttpExchange exchange) {
+    private static String generateLink(String link, String name) {
+        return String.format("<a href = \"%s\">%s</a><br>", link, name);
+    }
+
+   /* private static String getEttuFirstLettersData() throws IOException {
+        Document doc = Jsoup.connect("http://online.ettu.ru/").get();
+        return String.join("\n",doc.getElementsByClass("letter-link").eachText());
+    }*/
+
+    /*private static void printRequestInfo(HttpExchange exchange) {
         System.out.println("-- headers --");
         Headers requestHeaders = exchange.getRequestHeaders();
         requestHeaders.entrySet().forEach(System.out::println);
@@ -56,7 +62,7 @@ public class FirstLettersHttpHandler implements HttpHandler {
         URI requestURI = exchange.getRequestURI();
         String query = requestURI.getQuery();
         System.out.println(query);
-    }
+    }*/
 }
 
 
