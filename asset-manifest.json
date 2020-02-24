@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/ettu-schedule/frontend/static/css/main.d1b05096.chunk.css",
-    "main.js": "/ettu-schedule/frontend/static/js/main.4f5b36c8.chunk.js",
-    "main.js.map": "/ettu-schedule/frontend/static/js/main.4f5b36c8.chunk.js.map",
-    "runtime-main.js": "/ettu-schedule/frontend/static/js/runtime-main.4f9431a0.js",
-    "runtime-main.js.map": "/ettu-schedule/frontend/static/js/runtime-main.4f9431a0.js.map",
-    "static/js/2.5980eb20.chunk.js": "/ettu-schedule/frontend/static/js/2.5980eb20.chunk.js",
-    "static/js/2.5980eb20.chunk.js.map": "/ettu-schedule/frontend/static/js/2.5980eb20.chunk.js.map",
-    "index.html": "/ettu-schedule/frontend/index.html",
-    "precache-manifest.4ddd9fb7734ed202c5bad255670798e5.js": "/ettu-schedule/frontend/precache-manifest.4ddd9fb7734ed202c5bad255670798e5.js",
-    "service-worker.js": "/ettu-schedule/frontend/service-worker.js",
-    "static/css/main.d1b05096.chunk.css.map": "/ettu-schedule/frontend/static/css/main.d1b05096.chunk.css.map",
-    "static/js/2.5980eb20.chunk.js.LICENSE.txt": "/ettu-schedule/frontend/static/js/2.5980eb20.chunk.js.LICENSE.txt",
-    "static/media/logo.svg": "/ettu-schedule/frontend/static/media/logo.5d5d9eef.svg"
+    "main.css": "/ettu-schedule/frontend/build/static/css/main.d1b05096.chunk.css",
+    "main.js": "/ettu-schedule/frontend/build/static/js/main.05d8affd.chunk.js",
+    "main.js.map": "/ettu-schedule/frontend/build/static/js/main.05d8affd.chunk.js.map",
+    "runtime-main.js": "/ettu-schedule/frontend/build/static/js/runtime-main.c0529f25.js",
+    "runtime-main.js.map": "/ettu-schedule/frontend/build/static/js/runtime-main.c0529f25.js.map",
+    "static/js/2.5980eb20.chunk.js": "/ettu-schedule/frontend/build/static/js/2.5980eb20.chunk.js",
+    "static/js/2.5980eb20.chunk.js.map": "/ettu-schedule/frontend/build/static/js/2.5980eb20.chunk.js.map",
+    "index.html": "/ettu-schedule/frontend/build/index.html",
+    "precache-manifest.fdcd425d6e2ea67d9a3013072fd99634.js": "/ettu-schedule/frontend/build/precache-manifest.fdcd425d6e2ea67d9a3013072fd99634.js",
+    "service-worker.js": "/ettu-schedule/frontend/build/service-worker.js",
+    "static/css/main.d1b05096.chunk.css.map": "/ettu-schedule/frontend/build/static/css/main.d1b05096.chunk.css.map",
+    "static/js/2.5980eb20.chunk.js.LICENSE.txt": "/ettu-schedule/frontend/build/static/js/2.5980eb20.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/ettu-schedule/frontend/build/static/media/logo.5d5d9eef.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.4f9431a0.js",
+    "static/js/runtime-main.c0529f25.js",
     "static/js/2.5980eb20.chunk.js",
     "static/css/main.d1b05096.chunk.css",
-    "static/js/main.4f5b36c8.chunk.js"
+    "static/js/main.05d8affd.chunk.js"
   ]
 }
