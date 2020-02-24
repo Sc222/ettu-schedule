@@ -1,13 +1,10 @@
 package ru.sc222.EttuSchedule.server;
 
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.sc222.EttuSchedule.ettu.TransportApi;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
 
 public class TramStopsHttpHandler implements HttpHandler {
 
@@ -22,18 +19,10 @@ public class TramStopsHttpHandler implements HttpHandler {
         handleRequest(httpExchange);
     }
 
+    //todo cors header ?
+    //todo make server send error response headers on getting data error
     private void handleRequest(HttpExchange httpExchange) throws IOException {
         String result = transportApi.getTramStops();
-        URI requestURI = httpExchange.getRequestURI();
-        String response = result;
-       // String response = "This is the response at " + requestURI+"<br>All tram stops<br>"+result;
-        Headers headers = httpExchange.getResponseHeaders();
-        headers.add("Access-Control-Allow-Origin","http://localhost");
-        headers.add("Content-Type","application/json; charset=utf-8");
-        //todo cors header ?
-        httpExchange.sendResponseHeaders(200, response.getBytes().length);
-        OutputStream os = httpExchange.getResponseBody();
-        os.write(response.getBytes());
-        os.close();
+        ServerUtils.sendResponse(httpExchange, result, 200);
     }
 }
