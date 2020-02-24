@@ -4,7 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import ru.sc222.EttuSchedule.ettu.EttuTransportApi;
 import ru.sc222.EttuSchedule.ettu.TransportApi;
 import ru.sc222.EttuSchedule.server.ServerUtils;
-import ru.sc222.EttuSchedule.settings.Sc222Settings;
+import ru.sc222.EttuSchedule.settings.HerokuSettings;
 import ru.sc222.EttuSchedule.settings.StaticSettings;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Program {
         try {
             HttpServer server = ServerUtils.createServer(transportApi);
             server.start();
-            System.out.println("Server is live on https://lettu-schedule.herokuapp.com:8000");
+            System.out.println("Server is live on httpsmvn://lettu-schedule.herokuapp.com:8000");
         } catch (IOException e) {
             System.out.println("Error running server");
             e.printStackTrace();
