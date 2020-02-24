@@ -17,7 +17,7 @@ public class Program {
         try {
             HttpServer server = ServerUtils.createServer(transportApi);
             server.start();
-            System.out.println("Server is live on https//:ettu-schedule.herokuapp.com:8000");
+            System.out.println("Server is live on https://ettu-schedule.herokuapp.com:8000");
         } catch (IOException e) {
             System.out.println("Error running server");
             e.printStackTrace();
