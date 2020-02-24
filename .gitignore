@@ -1,6 +1,30 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
+#nodejs ignore
+
+# dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.js
+
+# testing
+/frontend/coverage
+
+# production
+/frontend/build
+
+# misc
+/frontend/.DS_Store
+./frontend/env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+
 # File containing api keys and other sensitive stuff
 /backend/src/main/java/ru/sc222/EttuSchedule/settings/Sc222Settings.java
 
@@ -12,9 +36,15 @@
 /backend/.idea/**/usage.statistics.xml
 /backend/.idea/**/dictionaries
 /backend/.idea/**/shelf
+/frontend/.idea/**/workspace.xml
+/frontend/.idea/**/tasks.xml
+/frontend/.idea/**/usage.statistics.xml
+/frontend/.idea/**/dictionaries
+/frontend/.idea/**/shelf
 
 # Generated files
 /backend/.idea/**/contentModel.xml
+/frontend/.idea/**/contentModel.xml
 
 # Sensitive or high-churn files
 /backend/.idea/**/dataSources/
@@ -24,6 +54,13 @@
 /backend/.idea/**/dynamic.xml
 /backend/.idea/**/uiDesigner.xml
 /backend/.idea/**/dbnavigator.xml
+/frontend/.idea/**/dataSources/
+/frontend/.idea/**/dataSources.ids
+/frontend/.idea/**/dataSources.local.xml
+/frontend/.idea/**/sqlDataSources.xml
+/frontend/.idea/**/dynamic.xml
+/frontend/.idea/**/uiDesigner.xml
+/frontend/.idea/**/dbnavigator.xml
 
 
 # File-based project format
@@ -35,3 +72,13 @@
 
 # Editor-based Rest Client
 /backend/.idea/httpRequests
+
+# File-based project format
+/frontend/*.iws
+
+# IntelliJ
+/frontend/out/
+
+
+# Editor-based Rest Client
+/frontend/.idea/httpRequests
