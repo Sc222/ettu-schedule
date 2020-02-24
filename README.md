@@ -1,2 +1,0 @@
-# EttuSchedule
-under construction
