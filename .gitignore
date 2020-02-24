@@ -4,6 +4,8 @@
 # File containing api keys and other sensitive stuff
 /backend/src/main/java/ru/sc222/EttuSchedule/settings/Sc222Settings.java
 
+/backend/target/
+
 # User-specific stuff
 /backend/.idea/**/workspace.xml
 /backend/.idea/**/tasks.xml
@@ -29,6 +31,7 @@
 
 # IntelliJ
 /backend/out/
+
 
 # Editor-based Rest Client
 /backend/.idea/httpRequests
