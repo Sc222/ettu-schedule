@@ -2,8 +2,11 @@ package ru.sc222.EttuSchedule;
 
 import com.sun.net.httpserver.HttpServer;
 import ru.sc222.EttuSchedule.ettu.EttuTransportApi;
-import ru.sc222.EttuSchedule.ettu.EttuTransportMapApi;
 import ru.sc222.EttuSchedule.ettu.TransportApi;
+import ru.sc222.EttuSchedule.server.ApiLinksHttpHandler;
+import ru.sc222.EttuSchedule.server.TramStopsHttpHandler;
+import ru.sc222.EttuSchedule.server.TransportNearStopsHttpHandler;
+import ru.sc222.EttuSchedule.server.TrolleyStopsHttpHandler;
 import ru.sc222.EttuSchedule.settings.Sc222Settings;
 import ru.sc222.EttuSchedule.settings.StaticSettings;
 
@@ -24,10 +27,12 @@ public class Program {
             server.createContext("/", new ApiLinksHttpHandler());
             server.createContext("/tram-stops", new TramStopsHttpHandler(transportApi));
             server.createContext("/trolley-stops", new TrolleyStopsHttpHandler(transportApi));
+            server.createContext("/transport-near-stops", new TransportNearStopsHttpHandler(transportApi));
             server.setExecutor(threadPoolExecutor);
             server.start();
             System.out.println("Server is live on http://localhost:8001");
         } catch (IOException e) {
+            System.out.println("AOAOAOAOOAOA");
             e.printStackTrace();
         }
     }

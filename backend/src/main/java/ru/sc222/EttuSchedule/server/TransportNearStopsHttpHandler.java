@@ -1,8 +1,5 @@
-package ru.sc222.EttuSchedule;
+package ru.sc222.EttuSchedule.server;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -11,14 +8,13 @@ import ru.sc222.EttuSchedule.ettu.TransportApi;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URL;
 
-public class TrolleyStopsHttpHandler implements HttpHandler {
+public class TransportNearStopsHttpHandler implements HttpHandler {
 
-    private static TransportApi transportApi;
+    private TransportApi transportApi;
 
-    public TrolleyStopsHttpHandler(TransportApi transportApi) {
-        TrolleyStopsHttpHandler.transportApi = transportApi;
+    public TransportNearStopsHttpHandler(TransportApi transportApi) {
+        this.transportApi = transportApi;
     }
 
     @Override
@@ -26,10 +22,13 @@ public class TrolleyStopsHttpHandler implements HttpHandler {
         handleRequest(httpExchange);
     }
 
-    private static void handleRequest(HttpExchange httpExchange) throws IOException {
-        String result = transportApi.getTrolleyStops();
+    private void handleRequest(HttpExchange httpExchange) throws IOException {
         URI requestURI = httpExchange.getRequestURI();
-        String response = result;
+        String uri =  requestURI.toString();
+        String stop = uri.substring(uri.lastIndexOf("/")+1);
+        int stopId = stop.matches("[0-9]+") ? Integer.parseInt(stop) : 0;
+        String response = transportApi.getTransportNearStop(stopId);
+
         Headers headers = httpExchange.getResponseHeaders();
         headers.add("Access-Control-Allow-Origin","http://localhost");
         headers.add("Content-Type","application/json; charset=utf-8");

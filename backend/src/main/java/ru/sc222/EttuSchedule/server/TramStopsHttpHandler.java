@@ -1,4 +1,4 @@
-package ru.sc222.EttuSchedule;
+package ru.sc222.EttuSchedule.server;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -11,10 +11,10 @@ import java.net.URI;
 
 public class TramStopsHttpHandler implements HttpHandler {
 
-    private static TransportApi transportApi;
+    private TransportApi transportApi;
 
     public TramStopsHttpHandler(TransportApi transportApi) {
-        TramStopsHttpHandler.transportApi = transportApi;
+        this.transportApi = transportApi;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class TramStopsHttpHandler implements HttpHandler {
         handleRequest(httpExchange);
     }
 
-    private static void handleRequest(HttpExchange httpExchange) throws IOException {
+    private void handleRequest(HttpExchange httpExchange) throws IOException {
         String result = transportApi.getTramStops();
         URI requestURI = httpExchange.getRequestURI();
         String response = result;

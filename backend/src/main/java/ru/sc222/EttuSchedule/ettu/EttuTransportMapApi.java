@@ -2,8 +2,8 @@ package ru.sc222.EttuSchedule.ettu;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import ru.sc222.EttuSchedule.settings.StaticSettings;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,19 +29,20 @@ public class EttuTransportMapApi implements TransportApi {
     }
 
     @Override
-    public ArrayNode getTramsNearStop(int stopId) {
-        return null;
-    }
-
-    @Override
-    public ArrayNode getTrolleysNearStop(int stopId) {
-        return null;
+    public String getTransportNearStop(int stopId) throws IOException {
+        throw new NotImplementedException();
     }
 
     private String getStops(String trolleyStops) throws IOException {
         URL url = getApiUrl(trolleyStops);
         HashSet<Transport> stopsList = new HashSet<>();
-        ArrayNode stops = (ArrayNode) new ObjectMapper().readTree(url).get("points");
+        JsonNode stops;
+        try {
+            stops = new ObjectMapper().readTree(url).get("points");
+        }
+        catch (IOException e){
+            return new ObjectMapper().writeValueAsString(new Transport(-1,"Error",""));
+        }
         for(JsonNode stop: stops)        {
             int id = stop.get("ID").asInt(Integer.MIN_VALUE);
             String name = stop.get("NAME").asText("");

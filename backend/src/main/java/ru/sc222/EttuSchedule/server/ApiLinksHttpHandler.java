@@ -1,4 +1,4 @@
-package ru.sc222.EttuSchedule;
+package ru.sc222.EttuSchedule.server;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -34,6 +34,7 @@ public class ApiLinksHttpHandler implements HttpHandler {
         StringBuilder result = new StringBuilder();
         result.append(generateLink("/tram-stops","Tram stops"));
         result.append(generateLink("/trolley-stops","Trolley stops"));
+        result.append(generateLink("/transport-near-stops","Transport near stops (pass stop id as /%id%)"));
         return result.toString();
     }
 
