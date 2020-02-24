@@ -12,12 +12,12 @@ import java.io.IOException;
 public class Program {
 
     public static void main(String[] args) {
-        StaticSettings.init(new Sc222Settings()); //call once, make your own implementation
+        StaticSettings.init(new HerokuSettings()); //call once, make your own implementation
         TransportApi transportApi = new EttuTransportApi();
         try {
             HttpServer server = ServerUtils.createServer(transportApi);
             server.start();
-            System.out.println("Server is live on http://localhost:8001");
+            System.out.println("Server is live on https://lettu-schedule.herokuapp.com:8000");
         } catch (IOException e) {
             System.out.println("Error running server");
             e.printStackTrace();
