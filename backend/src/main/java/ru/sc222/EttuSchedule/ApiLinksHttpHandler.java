@@ -1,4 +1,4 @@
-package server;
+package ru.sc222.EttuSchedule;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -21,6 +21,7 @@ public class ApiLinksHttpHandler implements HttpHandler {
         String response = "This is the response at " + requestURI+"<br>All Api links:"+result;
         Headers headers = httpExchange.getResponseHeaders();
         //headers.add("Content-Type","application/json; charset=utf-8");
+        headers.add("Access-Control-Allow-Origin","http://localhost");
         headers.add("Content-Type","text/html; charset=utf-8");
         httpExchange.sendResponseHeaders(200, response.getBytes().length);
         //httpExchange
@@ -32,12 +33,12 @@ public class ApiLinksHttpHandler implements HttpHandler {
     private static String generateApiLinksPage() {
         StringBuilder result = new StringBuilder();
         result.append(generateLink("/tram-stops","Tram stops"));
-        result.append(generateLink("/troll-stops","Troll stops"));
+        result.append(generateLink("/trolley-stops","Trolley stops"));
         return result.toString();
     }
 
     private static String generateLink(String link, String name) {
-        return String.format("<a href = \"%s\">%s</a><br>", link, name);
+        return String.format("<br><a href = \"%s\">%s</a>", link, name);
     }
 
    /* private static String getEttuFirstLettersData() throws IOException {
