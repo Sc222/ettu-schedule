@@ -16,7 +16,7 @@ public class ServerUtils {
 
     public static HttpServer createServer(TransportApi transportApi) throws IOException {
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(StaticSettings.get().getExecutorsCount());
-        HttpServer result = HttpServer.create(new InetSocketAddress(StaticSettings.get().getHostName(), StaticSettings.get().getPort()), 0);
+        HttpServer result = HttpServer.create(new InetSocketAddress(StaticSettings.get().getPort()), 0);
         result.createContext("/", new ApiLinksHttpHandler());
         result.createContext("/tram-stops", new TramStopsHttpHandler(transportApi));
         result.createContext("/trolley-stops", new TrolleyStopsHttpHandler(transportApi));
