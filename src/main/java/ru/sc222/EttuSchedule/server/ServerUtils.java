@@ -27,7 +27,7 @@ public class ServerUtils {
 
     public static void sendResponse(HttpExchange httpExchange, String response, int status) throws IOException {
         Headers headers = httpExchange.getResponseHeaders();
-        headers.add("Access-Control-Allow-Origin",StaticSettings.get().getHostName());
+        headers.add("Access-Control-Allow-Origin", "*"); //todo * is set for testing, remove in future
         headers.add("Content-Type","application/json; charset=utf-8");
         httpExchange.sendResponseHeaders(status, response.getBytes().length);
         OutputStream os = httpExchange.getResponseBody();
