@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Ettu Schedule",
+  "name": "Ettu Schedule - Yekaterinburg trams and trolleys timetable",
   "icons": [
     {
       "src": "favicon.ico",
