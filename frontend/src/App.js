@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import TramIcon from '@material-ui/icons/TramTwoTone';
 import TrolleybusIcon from '@material-ui/icons/DirectionsBusTwoTone';
+import ScheduleIcon from '@material-ui/icons/EventNoteTwoTone';
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -17,19 +18,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {TableContainer} from "@material-ui/core";
-
-
-//parse stops json to stops dictionary {id, nameWithDirection}
-//todo check if json is valid?
-function stopsJsonToDictionary(stopsJson) {
-    let stops = {};
-    for (let i = 0, stop; i < stopsJson.length; i++) {
-        stop = stopsJson[i];
-        stops[stop.id] = stop.nameWithDirection;
-        console.log(stop.id + ": " + stop.nameWithDirection);
-    }
-    return stops;
-}
 
 function stopsSort(stops) {
     stops.sort(function (a, b) {
@@ -123,12 +111,14 @@ export default class App extends React.Component {
 
     //todo refactor
     //todo split in classes
+    //todo replace margins with custom theme
+    //todo custom THEME (colors, spacing, etc)
     render() {
         return (
             <div className={styles.root}>
                 <AppBar position="static">
                     <Toolbar variant="dense">
-                        <TramIcon edge="start" style={{marginRight: 16}}/>
+                        <ScheduleIcon edge="start" style={{marginRight: 16}}/>
                         <Typography variant="h6" className={styles.header}>
                             Ettu Schedule
                         </Typography>
@@ -165,7 +155,7 @@ export default class App extends React.Component {
                         </Grid>
                     </Paper>
 
-                    <TableContainer  component={Paper} elevation={2} style={{marginTop: 16}}>
+                    {this.state.schedule.length===0?"":<TableContainer  component={Paper} elevation={2} style={{marginTop: 16}}>
                         <Table aria-label="schedule table" size="small">
                             <TableHead>
                                 <TableRow>
@@ -186,7 +176,7 @@ export default class App extends React.Component {
                                 ))}
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </TableContainer>}
                 </Container>
             </div>
         );
