@@ -113,6 +113,7 @@ export default class App extends React.Component {
     //todo split in classes
     //todo replace margins with custom theme
     //todo custom THEME (colors, spacing, etc)
+    //todo !!! react clear search when transport type choosed using createRef
     render() {
         return (
             <div className={styles.root}>
@@ -137,13 +138,19 @@ export default class App extends React.Component {
                             <Divider variant="middle"/>
                             <Grid container direction="row" justify="center" alignItems="center">
 
-                                <IconButton style={{margin: 8}} onClick={() => this.setState({isTrams: true})}
+                                <IconButton style={{margin: 8}} onClick={() => {
+                                    this.setState({isTrams: true});
+                                }}
                                             color={this.getTramColor()}
                                             aria-label="Трамвай">
                                     <TramIcon fontSize="large"/>
                                 </IconButton>
-                                <IconButton style={{margin: 8}} onClick={() => this.setState({isTrams: false})}
-                                            color={this.getTrolleyColor()} aria-label="Троллейбус">
+                                <IconButton style={{margin: 8}} onClick={() =>{
+                                    this.setState({isTrams: false});
+                                }
+                                }
+                                            color={
+                                                this.getTrolleyColor()} aria-label="Троллейбус">
                                     <TrolleybusIcon fontSize="large"/>
                                 </IconButton>
                             </Grid>
@@ -155,28 +162,31 @@ export default class App extends React.Component {
                         </Grid>
                     </Paper>
 
-                    {this.state.schedule.length===0?"":<TableContainer  component={Paper} elevation={2} style={{marginTop: 16}}>
-                        <Table aria-label="schedule table" size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{this.state.isTrams ? "Трамвай" : "Троллейбус"}</TableCell>
-                                    <TableCell align="right">Время ожидания (мин)</TableCell>
-                                    <TableCell align="right">Расстояние до остановки (м)</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {this.state.schedule.map(tmp => (
-                                    <TableRow key={tmp.name}>
-                                        <TableCell component="th" scope="row">
-                                            {tmp.name}
-                                        </TableCell>
-                                        <TableCell align="right">{tmp.timeRemaining}</TableCell>
-                                        <TableCell align="right">{tmp.distanceRemaining}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>}
+                    {
+                        this.state.schedule.length === 0
+                            ? ""
+                            : <TableContainer component={Paper} elevation={2} style={{marginTop: 16}}>
+                                <Table aria-label="schedule table" size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>№</TableCell>
+                                            <TableCell align="right">Время ожидания (мин)</TableCell>
+                                            <TableCell align="right">Расстояние до остановки (м)</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {this.state.schedule.map(tmp => (
+                                            <TableRow key={tmp.name}>
+                                                <TableCell component="th" scope="row">
+                                                    {tmp.name}
+                                                </TableCell>
+                                                <TableCell align="right">{tmp.timeRemaining}</TableCell>
+                                                <TableCell align="right">{tmp.distanceRemaining}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>}
                 </Container>
             </div>
         );

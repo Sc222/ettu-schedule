@@ -7,6 +7,7 @@ export default class CustomSearch extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            ref:this.props.ref,
             getStops: this.props.getStops,
             error:false,
             setSchedule:this.props.setSchedule
@@ -37,19 +38,22 @@ export default class CustomSearch extends React.Component{
 
     getStopSchedule(value) {
         console.log(value);
-        fetch("https://ettu-schedule.herokuapp.com/transport-near-stops/"+value.id)
-            .then(res => res.json())
-            .then(res=>{
-                console.log(res);
-                this.state.setSchedule(res);
-                //todo process errors
-                //todo show error dialog
-                /*if(res.length!==0&&res.name!=="error")
+        if(value!=null) {
+            //todo loading icon on the bottom of the card
+            fetch("https://ettu-schedule.herokuapp.com/transport-near-stops/" + value.id)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res);
                     this.state.setSchedule(res);
-                else
-                {
+                    //todo process errors
+                    //todo show error dialog
+                    /*if(res.length!==0&&res.name!=="error")
+                        this.state.setSchedule(res);
+                    else
+                    {
 
-                }*/
-            });
+                    }*/
+                });
+        }
     }
 }
