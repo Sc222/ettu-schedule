@@ -1,20 +1,4 @@
-.root{
-  width: 100%;
-  flex-grow: 1;
+.root {
+    width: 100%;
+    flex-grow: 1;
 }
-.header
-{
-  flex-grow: 1;
-}
-.defaultPadding
-{
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-.textPadding
-{
-  padding-bottom: 8px;
-}
-

@@ -5,19 +5,17 @@ import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import TramIcon from '@material-ui/icons/TramTwoTone';
 import TrolleybusIcon from '@material-ui/icons/DirectionsBusTwoTone';
-import ScheduleIcon from '@material-ui/icons/EventNoteTwoTone';
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {TableContainer} from "@material-ui/core";
+import CustomToolbar from "./CustomToolbar"
 
 function stopsSort(stops) {
     stops.sort(function (a, b) {
@@ -117,15 +115,7 @@ export default class App extends React.Component {
     render() {
         return (
             <div className={styles.root}>
-                <AppBar position="static">
-                    <Toolbar variant="dense">
-                        <ScheduleIcon edge="start" style={{marginRight: 16}}/>
-                        <Typography variant="h6" className={styles.header}>
-                            Ettu Schedule
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-
+                <CustomToolbar/>
                 <Container maxWidth="sm" style={{marginTop: 16, marginBottom: 16}}>
                     <Paper elevation={2} style={{padding: 16}}>
                         <Grid container direction="column" justify="center">
@@ -145,7 +135,7 @@ export default class App extends React.Component {
                                             aria-label="Трамвай">
                                     <TramIcon fontSize="large"/>
                                 </IconButton>
-                                <IconButton style={{margin: 8}} onClick={() =>{
+                                <IconButton style={{margin: 8}} onClick={() => {
                                     this.setState({isTrams: false});
                                 }
                                 }
@@ -161,7 +151,6 @@ export default class App extends React.Component {
                             </Grid>
                         </Grid>
                     </Paper>
-
                     {
                         this.state.schedule.length === 0
                             ? ""

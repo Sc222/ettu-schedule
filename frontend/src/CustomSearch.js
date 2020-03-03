@@ -14,12 +14,6 @@ export default class CustomSearch extends React.Component{
         };
     }
 
-    /*getStops = () =>
-    {
-       return this.state.getStops();
-       // return [{id:100,nameWithDirection:"опа"},{id:101,nameWithDirection:"опвва"}]
-    };*/
-
     render() {
         return (
             <Autocomplete
