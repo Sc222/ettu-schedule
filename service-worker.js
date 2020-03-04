@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ettu-schedule/precache-manifest.5f30a5152b197c01c4b7411f97f5c203.js"
+  "/ettu-schedule/precache-manifest.8475792bbb8a1d802e50a1e24489215b.js"
 );
 
 self.addEventListener('message', (event) => {
