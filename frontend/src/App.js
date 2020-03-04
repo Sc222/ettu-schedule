@@ -16,6 +16,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {TableContainer} from "@material-ui/core";
 import CustomToolbar from "./CustomToolbar"
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 function stopsSort(stops) {
     stops.sort(function (a, b) {
@@ -46,7 +47,8 @@ export default class App extends React.Component {
             tramStops: null,
             trolleyStops: null,
             isTrams: true, //trams or trolleys
-            schedule: []
+            schedule: [],
+            isScheduleLoading: false
         };
     }
 
@@ -67,7 +69,7 @@ export default class App extends React.Component {
 
     setSchedule = (schedule) => {
         schedule.sort(function (a, b) {
-                return a.distanceRemaining.localeCompare(b.distanceRemaining);
+                return a.distanceRemaining - b.distanceRemaining;
             }
         );
         console.log(schedule);
@@ -85,6 +87,10 @@ export default class App extends React.Component {
         console.log("set set set");
         console.log(tmp);
         this.setState({schedule: tmp});*/
+    };
+
+    setIsScheduleLoading = (isLoading) => {
+        this.setState({isScheduleLoading: isLoading});
     };
 
     getStops = () => {
@@ -111,19 +117,21 @@ export default class App extends React.Component {
     //todo split in classes
     //todo replace margins with custom theme
     //todo custom THEME (colors, spacing, etc)
-    //todo !!! react clear search when transport type choosed using createRef
+    //todo !!! react clear search when transport type chosen using createRef
+    //todo !!! last update time
+    //todo ! update schedule in real time
     render() {
         return (
             <div className={styles.root}>
                 <CustomToolbar/>
                 <Container maxWidth="sm" style={{marginTop: 16, marginBottom: 16}}>
-                    <Paper elevation={2} style={{padding: 16}}>
+                    <Paper elevation={2} style={{paddingTop: 16, paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
                         <Grid container direction="column" justify="center">
-                            <Typography variant="h4" style={{paddingBottom: 8}}>
+                            <Typography variant="h5" style={{paddingBottom: 8}}>
                                 Где {this.state.isTrams ? "трамвай" : "троллейбус"}?
                             </Typography>
-                            <Typography color="textSecondary" variant="body1" style={{paddingBottom: 16}}>
-                                Выберите интересующий вас тип транспорта, а затем введите остановку.
+                            <Typography color="textSecondary" variant="body2" style={{paddingBottom: 16}}>
+                                Выберите интересующий вас тип транспорта и укажите остановку.
                             </Typography>
                             <Divider variant="middle"/>
                             <Grid container direction="row" justify="center" alignItems="center">
@@ -147,36 +155,52 @@ export default class App extends React.Component {
                             <Divider variant="middle"/>
                             <Grid style={{marginTop: 16}} container direction="row" justify="center"
                                   alignItems="stretch">
-                                <CustomSearch setSchedule={this.setSchedule} getStops={this.getStops}/>
+                                <CustomSearch setScheduleLoading={this.setIsScheduleLoading}
+                                              setSchedule={this.setSchedule} getStops={this.getStops}/>
                             </Grid>
                         </Grid>
+                        <LinearProgress color="secondary" style={
+                            {
+                                visibility: this.state.isScheduleLoading ? "visible" : "hidden",
+                                marginLeft: -16, marginRight: -16, marginTop: 8, marginBottom: -16
+                            }
+                        }/>
                     </Paper>
+
                     {
-                        this.state.schedule.length === 0
-                            ? ""
-                            : <TableContainer component={Paper} elevation={2} style={{marginTop: 16}}>
-                                <Table aria-label="schedule table" size="small">
-                                    <TableHead>
+                        this.state.schedule.length !== 0 &&
+                        <TableContainer component={Paper} elevation={2} style={{marginTop: 16}}>
+                            <Table aria-label="schedule table" size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>№</TableCell>
+                                        <TableCell align="right">Время (мин)</TableCell>
+                                        <TableCell align="right">Расстояние (м)</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {/*todo table row needs key*/}
+                                    {this.state.schedule.map(tmp => (
                                         <TableRow>
-                                            <TableCell>№</TableCell>
-                                            <TableCell align="right">Время ожидания (мин)</TableCell>
-                                            <TableCell align="right">Расстояние до остановки (м)</TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {tmp.name}
+                                            </TableCell>
+                                            <TableCell align="right">{tmp.timeRemaining}</TableCell>
+                                            <TableCell align="right">{tmp.distanceRemaining}</TableCell>
                                         </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {this.state.schedule.map(tmp => (
-                                            <TableRow key={tmp.name}>
-                                                <TableCell component="th" scope="row">
-                                                    {tmp.name}
-                                                </TableCell>
-                                                <TableCell align="right">{tmp.timeRemaining}</TableCell>
-                                                <TableCell align="right">{tmp.distanceRemaining}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>}
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>}
                 </Container>
+                {/* //todo think about alerts
+                    <Snackbar
+                    anchorOrigin={{vertical:'bottom',horizontal:'center'}}
+                    open={this.state.schedule.length!==0}
+                    autoHideDuration={1000}
+                    onClose={()=>{}}>
+                    <Alert severity="success">Данные успешно загружены!</Alert>
+                </Snackbar>*/}
             </div>
         );
     }
