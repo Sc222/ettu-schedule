@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import TramIcon from '@material-ui/icons/TramTwoTone';
 import TrolleybusIcon from '@material-ui/icons/DirectionsBusTwoTone';
+import UpdateIcon from '@material-ui/icons/RefreshTwoTone';
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -15,94 +16,114 @@ import TableHead from "@material-ui/core/TableHead";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {TableContainer} from "@material-ui/core";
-import CustomToolbar from "./CustomToolbar"
+import MainToolbar from "./MainToolbar"
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Box from "@material-ui/core/Box";
 
 function stopsSort(stops) {
     stops.sort(function (a, b) {
         return a.nameWithDirection.localeCompare(b.nameWithDirection)
     });
-    for (let i = 0; i < stops.length; i++)
-        console.log(stops[i].id + ": " + stops[i].nameWithDirection);
     return stops;
 }
 
 function stopsJsonToArray(stopsJson) {
     let stops = [];
-    for (let i = 0, stop; i < stopsJson.length; i++) {
-        stop = stopsJson[i];
-        stops.push(stop);
-    }
+    for (let i = 0; i < stopsJson.length; i++)
+        stops.push(stopsJson[i]);
     return stops;
 }
 
-const loading = [];
+function getCurrentTimeStr() {
+    let date = new Date();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    return hours + ":" + minutes;
+}
 
 export default class App extends React.Component {
-
 
     constructor(props) {
         super(props);
         this.state = {
-            tramStops: null,
-            trolleyStops: null,
+            tramStops: [],
+            trolleyStops: [],
             isTrams: true, //trams or trolleys
-            schedule: [],
-            isScheduleLoading: false
+            schedule: null, //null - start, "error" - error, [] - no schedule for stop
+            scheduleInfo: null,
+            isScheduleLoading: false,
+            lastUpdateTime: ""
         };
     }
 
     componentDidMount() {
+        this.loadTramStops();
+        this.loadTrolleyStops();
+    }
 
+    loadTramStops() {
         fetch("https://ettu-schedule.herokuapp.com/tram-stops")
             .then(res => res.json())
             .then(res => stopsJsonToArray(res))
             .then(res => stopsSort(res))
-            .then(res => this.setState({tramStops: res}));
+            .then(res => this.setState({tramStops: res}))
+            .catch(err => console.log(err.toString()));
+    }
 
+    loadTrolleyStops() {
         fetch("https://ettu-schedule.herokuapp.com/trolley-stops")
             .then(res => res.json())
             .then(res => stopsJsonToArray(res))
             .then(res => stopsSort(res))
-            .then(res => this.setState({trolleyStops: res}));
+            .then(res => this.setState({trolleyStops: res}))
+            .catch(err => console.log(err.toString()));
     }
 
-    setSchedule = (schedule) => {
-        schedule.sort(function (a, b) {
-                return a.distanceRemaining - b.distanceRemaining;
-            }
-        );
-        console.log(schedule);
-        this.setState({schedule: schedule});
-        //todo debug when no schedule
-        /*let tmp = [{"name": "5", "timeRemaining": "0", "distanceRemaining": "100"},
-            {"name": "6", "timeRemaining": "0", "distanceRemaining": "200"},
-            {"name": "5", "timeRemaining": "1", "distanceRemaining": "10"},
-            {"name": "5", "timeRemaining": "0", "distanceRemaining": "300"}];
+    loadSchedule(scheduleInfo) {
+        if (scheduleInfo == null)
+            return;
+        console.log("loading: " + scheduleInfo);
+        this.setState({isScheduleLoading: true});
+        fetch("https://ettu-schedule.herokuapp.com/transport-near-stops/" + scheduleInfo.id)
+            .then(res => res.json())
+            .then(res => {
+                this.setState({isScheduleLoading: false});
+                if (res.length === 0)
+                    return [];
+                if (res[0].name !== "error")
+                    return res;
+                else
+                    throw new Error("error getting schedule: " + res);
+            })
+            .then(res => {
+                res.sort(function (a, b) {
+                        return a.distanceRemaining - b.distanceRemaining;
+                    }
+                );
+                this.setState({schedule: res});
+                this.setState({lastUpdateTime: getCurrentTimeStr()})
+            })
+            .catch(err => {
+                //todo process getting schedule errors
+                this.setState({schedule: "error"});
+                console.log(err.toString());
+            });
+    }
 
-        tmp.sort(function (a, b) {
-                return a.distanceRemaining.localeCompare(b.distanceRemaining);
-            }
-        );
-        console.log("set set set");
-        console.log(tmp);
-        this.setState({schedule: tmp});*/
-    };
 
-    setIsScheduleLoading = (isLoading) => {
-        this.setState({isScheduleLoading: isLoading});
+    updateSchedule = (scheduleInfo) => {
+        console.log("update sched: " + scheduleInfo.id + " " + scheduleInfo.name);
+        this.setState({scheduleInfo: scheduleInfo});
+        this.loadSchedule(scheduleInfo);
     };
 
     getStops = () => {
-        if (this.state.isTrams) {
-            if (this.state.tramStops == null)
-                return loading;
+        if (this.state.isTrams)
             return this.state.tramStops;
-        } else {
-            if (this.state.trolleyStops == null)
-                return loading;
+        else
             return this.state.trolleyStops;
-        }
     };
 
     getTrolleyColor = () => {
@@ -112,6 +133,18 @@ export default class App extends React.Component {
     getTramColor = () => {
         return this.state.isTrams ? "primary" : "default";
     };
+    
+    onTrolleyIcClick() {
+        if (this.state.trolleyStops.length === null) //load stops if they weren't
+            this.loadTrolleyStops();
+        this.setState({isTrams: false});
+    }
+
+    onTramIcClick() {
+        if (this.state.tramStops === null) //load stops if they weren't
+            this.loadTramStops();
+        this.setState({isTrams: true});
+    }
 
     //todo refactor
     //todo split in classes
@@ -120,10 +153,12 @@ export default class App extends React.Component {
     //todo !!! react clear search when transport type chosen using createRef
     //todo !!! last update time
     //todo ! update schedule in real time
+    //todo !!! error snackbar
+    //todo !! REFACTOR TABLES, EXTRACT CLASSES
     render() {
         return (
             <div className={styles.root}>
-                <CustomToolbar/>
+                <MainToolbar/>
                 <Container maxWidth="sm" style={{marginTop: 16, marginBottom: 16}}>
                     <Paper elevation={2} style={{paddingTop: 16, paddingLeft: 16, paddingRight: 16, paddingBottom: 16}}>
                         <Grid container direction="column" justify="center">
@@ -135,28 +170,19 @@ export default class App extends React.Component {
                             </Typography>
                             <Divider variant="middle"/>
                             <Grid container direction="row" justify="center" alignItems="center">
-
-                                <IconButton style={{margin: 8}} onClick={() => {
-                                    this.setState({isTrams: true});
-                                }}
-                                            color={this.getTramColor()}
-                                            aria-label="Трамвай">
+                                <IconButton style={{margin: 8}} onClick={() => this.onTramIcClick()}
+                                            color={this.getTramColor()} aria-label="Трамвай">
                                     <TramIcon fontSize="large"/>
                                 </IconButton>
-                                <IconButton style={{margin: 8}} onClick={() => {
-                                    this.setState({isTrams: false});
-                                }
-                                }
-                                            color={
-                                                this.getTrolleyColor()} aria-label="Троллейбус">
+                                <IconButton style={{margin: 8}} onClick={() => this.onTrolleyIcClick()}
+                                            color={this.getTrolleyColor()} aria-label="Троллейбус">
                                     <TrolleybusIcon fontSize="large"/>
                                 </IconButton>
                             </Grid>
                             <Divider variant="middle"/>
                             <Grid style={{marginTop: 16}} container direction="row" justify="center"
                                   alignItems="stretch">
-                                <CustomSearch setScheduleLoading={this.setIsScheduleLoading}
-                                              setSchedule={this.setSchedule} getStops={this.getStops}/>
+                                <CustomSearch updateSchedule={this.updateSchedule} getStops={this.getStops}/>
                             </Grid>
                         </Grid>
                         <LinearProgress color="secondary" style={
@@ -166,41 +192,91 @@ export default class App extends React.Component {
                             }
                         }/>
                     </Paper>
-
-                    {
-                        this.state.schedule.length !== 0 &&
-                        <TableContainer component={Paper} elevation={2} style={{marginTop: 16}}>
+                    {(this.state.schedule !== null && this.state.schedule.length === 0)
+                    &&
+                    <Paper elevation={2} style={{marginTop: 16}}>
+                        <TableContainer>
                             <Table aria-label="schedule table" size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>№</TableCell>
-                                        <TableCell align="right">Время (мин)</TableCell>
-                                        <TableCell align="right">Расстояние (м)</TableCell>
+                                        <TableCell colSpan={3}>
+                                            <Grid container direction="row" justify="flex-end" alignItems="center">
+                                                <Typography variant="body2"
+                                                            style={{flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>
+                                                    <Box fontWeight="fontWeightMedium">{this.state.scheduleInfo.name}</Box>
+                                                </Typography>
+                                                <Typography variant="body2"
+                                                            color="primary"
+                                                            style={{display: "inline-block"}}>
+                                                    <Box fontWeight="fontWeightMedium">{this.state.lastUpdateTime}</Box>
+                                                </Typography>
+                                                <IconButton style={{display: "inline-block"}} aria-label="update"
+                                                            size="small" color="primary">
+                                                    <UpdateIcon onClick={() => this.updateSchedule(this.state.scheduleInfo)}/>
+                                                </IconButton>
+                                            </Grid>
+                                        </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {/*todo table row needs key*/}
-                                    {this.state.schedule.map(tmp => (
-                                        <TableRow>
-                                            <TableCell component="th" scope="row">
-                                                {tmp.name}
-                                            </TableCell>
-                                            <TableCell align="right">{tmp.timeRemaining}</TableCell>
-                                            <TableCell align="right">{tmp.distanceRemaining}</TableCell>
-                                        </TableRow>
-                                    ))}
+                                    <TableRow>
+                                        <TableCell colSpan={3}>Нет данных</TableCell>
+                                    </TableRow>
                                 </TableBody>
                             </Table>
-                        </TableContainer>}
+                        </TableContainer>
+                    </Paper>
+                    }
+                    {
+                        (this.state.schedule !== null && this.state.schedule !== "error" && this.state.schedule.length !== 0)
+                        &&
+                        <Paper elevation={2} style={{marginTop: 16}}>
+                            <TableContainer>
+                                <Table aria-label="schedule table" size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            {/*todo extract to table header class*/}
+                                            <TableCell colSpan={3}>
+                                                <Grid container direction="row" justify="flex-end" alignItems="center">
+                                                    <Typography variant="body2"
+                                                                style={{flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>
+                                                        <Box fontWeight="fontWeightMedium">{this.state.scheduleInfo.name}</Box>
+                                                    </Typography>
+                                                    <Typography variant="body2"
+                                                                color="primary"
+                                                                style={{display: "inline-block"}}>
+                                                        <Box fontWeight="fontWeightMedium">{this.state.lastUpdateTime}</Box>
+                                                    </Typography>
+                                                    <IconButton style={{display: "inline-block"}} aria-label="update"
+                                                                size="small" color="primary">
+                                                        <UpdateIcon onClick={() => this.updateSchedule(this.state.scheduleInfo)}/>
+                                                    </IconButton>
+                                                </Grid>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>№</TableCell>
+                                            <TableCell align="right">Время (мин)</TableCell>
+                                            <TableCell align="right">Расстояние (м)</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {/*todo table row needs key*/}
+                                        {this.state.schedule.map(tmp => (
+                                            <TableRow>
+                                                <TableCell component="th" scope="row">
+                                                    {tmp.name}
+                                                </TableCell>
+                                                <TableCell align="right">{tmp.timeRemaining}</TableCell>
+                                                <TableCell align="right">{tmp.distanceRemaining}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    }
                 </Container>
-                {/* //todo think about alerts
-                    <Snackbar
-                    anchorOrigin={{vertical:'bottom',horizontal:'center'}}
-                    open={this.state.schedule.length!==0}
-                    autoHideDuration={1000}
-                    onClose={()=>{}}>
-                    <Alert severity="success">Данные успешно загружены!</Alert>
-                </Snackbar>*/}
             </div>
         );
     }
